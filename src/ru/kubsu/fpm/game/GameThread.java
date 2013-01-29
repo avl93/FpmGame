@@ -12,7 +12,7 @@ class GameThread extends Thread {
 	public GameThread(GameFrame frame) {
 		frame.thread = this;
 		this.frame = frame;
-		this.field = new Field(5, 5);
+		this.field = new Field(50, 50);
 		frame.setSize(Field.getX(Field.sizeX + 3) + 20,
 				Field.getY(Field.sizeY) + 20);
 		key.clear();
@@ -33,9 +33,8 @@ class GameThread extends Thread {
 			ai++;
 			field.upd(key, (ai % 5 == 0));
 			Graphics g = frame.getGraphics();
-			Graphics s = g.create();
 			if (g != null)
-				field.draw(s);
+				field.draw(g);
 
 			t = System.currentTimeMillis();
 			long dt = t - pt;

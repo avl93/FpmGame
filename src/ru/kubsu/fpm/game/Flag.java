@@ -9,4 +9,9 @@ class Flag {
 		this.x=x;
 		this.y=y;
 	}
+
+	public Flag() {
+		this.x=(float) (Math.random()*Field.sizeX);
+		this.y=(float) (Math.random()*Field.sizeY);
+	}
 }

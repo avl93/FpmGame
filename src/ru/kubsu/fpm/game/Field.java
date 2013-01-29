@@ -13,6 +13,7 @@ class Field {
 
 	public Bot bots[];
 	public Flag flags[];
+	public ArrayList<Obstacle> obstacles;
 
 	private FieldInfo fieldInfo;
 
@@ -33,10 +34,11 @@ class Field {
 
 		flags = new Flag[f];
 		for (int i = 0; i < flags.length; i++) {
-			flags[i] = new Flag((float) Math.random() * sizeX,
-					(float) Math.random() * sizeY);
+			flags[i] = new Flag();
 		}
 
+		obstacles = new ArrayList<Obstacle>();
+		obstacles.add(new ObstCircle(5, 5, 1));
 		fieldInfo = new FieldInfo(this);
 		/*
 		 * bots[0].x=5; bots[0].y=5; bots[0].vx=0.3f; bots[0].vy=0.3f;
@@ -120,17 +122,21 @@ class Field {
 				}
 			}
 
-			// ... and flags
+			// ... flags ...
 			for (int j = 0; j < flags.length; j++) {
 				float dx = (bots[i].x - flags[j].x);
 				float dy = (bots[i].y - flags[j].y);
 				float dist = (float) Math.sqrt(Math.pow(dx, 2)
 						+ Math.pow(dy, 2));
 				if (dist < Bot.radius + Flag.radius) {
-					flags[j] = new Flag((float) Math.random() * sizeX,
-							(float) Math.random() * sizeY);
+					flags[j] = new Flag();
 					bots[i].score++;
 				}
+			}
+			
+			//... and obstacles
+			for (Obstacle curr : obstacles){
+				curr.checkCollision(bots[i]);
 			}
 		}
 	}
@@ -182,12 +188,17 @@ class Field {
 		}
 
 		g2.setColor(Color.black);
+		
 		float s = Flag.radius;
 		for (int i = 0; i < flags.length; i++) {
 			g2.drawLine(getX(flags[i].x - s), getX(flags[i].y - s),
 					getX(flags[i].x + s), getX(flags[i].y + s));
 			g2.drawLine(getX(flags[i].x - s), getX(flags[i].y + s),
 					getX(flags[i].x + s), getX(flags[i].y - s));
+		}
+		
+		for (Obstacle curr:obstacles){
+			curr.draw(g2);
 		}
 
 		g.drawImage(image, 0, 0, null);
