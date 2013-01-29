@@ -5,7 +5,7 @@ import ru.kubsu.fpm.gameai.*;
 class Bot {
 	public final static float radius = 0.5f;
 	public final static float diameter = radius * 2;
-	public final static float maxV = 0.5f;
+	public final static float maxV = 0.3f;
 	public final static float maxA = 0.03f;
 
 	public float x, y, vx, vy;
@@ -28,14 +28,10 @@ class Bot {
 		case 0:
 			ai = new BotAI();
 			break;
-		default:
 		case 1:
-			ai = new BotAI2();
-			break;
 		case 2:
-			ai = new BotAI2();
-			break;
 		case 3:
+		default:
 			ai = new BotAI2();
 			break;
 		}

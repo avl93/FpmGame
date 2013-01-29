@@ -13,7 +13,8 @@ class Field {
 
 	public Bot bots[];
 	public Flag flags[];
-	
+
+	private FieldInfo fieldInfo;
 
 	public float getBotX(int i) {
 		return bots[i].x;
@@ -29,11 +30,14 @@ class Field {
 			bots[i] = new Bot(this, (float) Math.random() * sizeX,
 					(float) Math.random() * sizeY, i, i);
 		}
+
 		flags = new Flag[f];
 		for (int i = 0; i < flags.length; i++) {
 			flags[i] = new Flag((float) Math.random() * sizeX,
 					(float) Math.random() * sizeY);
 		}
+
+		fieldInfo = new FieldInfo(this);
 		/*
 		 * bots[0].x=5; bots[0].y=5; bots[0].vx=0.3f; bots[0].vy=0.3f;
 		 */
@@ -61,10 +65,10 @@ class Field {
 	}
 
 	public void upd(boolean updAI) {
-		FieldInfo f = new FieldInfo(this);
+		fieldInfo.upd(this);
 		for (int i = 0; i < bots.length; i++) {
 			if (updAI)
-				bots[i].upd(f);
+				bots[i].upd(fieldInfo);
 			bots[i].move();
 		}
 		checkCollisions();
@@ -76,7 +80,7 @@ class Field {
 
 		for (int i = 0; i < bots.length; i++) {
 
-			// столкновения со стенами
+			// collisions with the walls...
 			if (bots[i].x - Bot.radius < 0) {
 				bots[i].x = Bot.diameter - bots[i].x;
 				bots[i].vx *= -k;
@@ -97,7 +101,7 @@ class Field {
 				bots[i].vy *= -k;
 			}
 
-			// с другими ботами
+			// ... other bots ...
 			for (int j = i + 1; j < bots.length; j++) {
 				float dx = (bots[i].x - bots[j].x);
 				float dy = (bots[i].y - bots[j].y);
@@ -105,7 +109,8 @@ class Field {
 						+ Math.pow(dy, 2));
 
 				if (dist < Bot.diameter) {
-
+					dx /= dist;
+					dy /= dist;
 					float depth = Bot.diameter - dist;
 
 					bots[i].vx += dx * depth * k2;
@@ -113,14 +118,9 @@ class Field {
 					bots[j].vx -= dx * depth * k2;
 					bots[j].vy -= dy * depth * k2;
 				}
-				/*
-				 * bots[i].ai.color = Color.red; bots[j].ai.color = Color.red; }
-				 * else { bots[i].ai.color = Color.black; bots[j].ai.color =
-				 * Color.black; }
-				 */
 			}
 
-			// с флагами
+			// ... and flags
 			for (int j = 0; j < flags.length; j++) {
 				float dx = (bots[i].x - flags[j].x);
 				float dy = (bots[i].y - flags[j].y);
@@ -156,13 +156,9 @@ class Field {
 	}
 
 	public void draw(Graphics g) {
-		// BufferedImage bi = new BufferedImage(getX(sizeX) + getX(0)+100,
-		// getY(sizeY)
-		// + getY(0), BufferedImage.TYPE_INT_ARGB);
-
-		BufferedImage bi = new BufferedImage(1000, 1000,
+		BufferedImage image = new BufferedImage(1000, 1000,
 				BufferedImage.TYPE_INT_ARGB);
-		Graphics2D g2 = bi.createGraphics();
+		Graphics2D g2 = image.createGraphics();
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 				RenderingHints.VALUE_ANTIALIAS_OFF);
 
@@ -194,6 +190,6 @@ class Field {
 					getX(flags[i].x + s), getX(flags[i].y - s));
 		}
 
-		g.drawImage(bi, 0, 0, null);
+		g.drawImage(image, 0, 0, null);
 	}
 }

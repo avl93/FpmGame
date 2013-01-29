@@ -4,6 +4,8 @@ import java.awt.Graphics;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
+import javax.swing.JFrame;
+
 class GameFrame extends javax.swing.JFrame {
 	private static final long serialVersionUID = 1L;
 	
@@ -28,6 +30,11 @@ class GameFrame extends javax.swing.JFrame {
 	public GameFrame(String string) {
 		super(string);
 		this.addKeyListener(kl);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setVisible(true);
+
+		thread = new GameThread(this);
+		thread.start();
 	}
 
 	public void paint(Graphics g) {

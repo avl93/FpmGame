@@ -1,6 +1,5 @@
 package ru.kubsu.fpm.game;
 
-import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 class FpmGame implements Runnable {
@@ -12,12 +11,7 @@ class FpmGame implements Runnable {
 
 	@Override
 	public void run() {
-		GameFrame f = new GameFrame("FpmGame");
-		f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		// f.setSize(500, 500);
-		f.setVisible(true);
-
-		t = new Thread(new GameThread(f));
-		t.start();
+		@SuppressWarnings("unused")
+		GameFrame frame = new GameFrame("FpmGame");
 	}
 }
