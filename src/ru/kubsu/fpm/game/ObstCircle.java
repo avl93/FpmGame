@@ -32,7 +32,6 @@ public class ObstCircle extends Obstacle {
 
 	@Override
 	public void checkCollision(Bot bot) {
-		float k2 = 0.5f;
 		float dx = (cx - bot.x);
 		float dy = (cy - bot.y);
 		float dist = (float) Point.distance(cx, cy, bot.x, bot.y);
@@ -41,9 +40,12 @@ public class ObstCircle extends Obstacle {
 			dx /= dist;
 			dy /= dist;
 			float depth = Bot.radius + this.radius - dist;
+			
+			//bot.x -= depth * dx;
+			//bot.y -= depth * dy;
 
-			bot.vx -= dx * depth * k2;
-			bot.vy -= dy * depth * k2;
+			bot.vx -= dx * depth;
+			bot.vy -= dy * depth;
 		}
 	}
 

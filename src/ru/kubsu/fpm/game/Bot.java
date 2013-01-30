@@ -2,7 +2,7 @@ package ru.kubsu.fpm.game;
 
 import ru.kubsu.fpm.gameai.*;
 
-class Bot {
+class Bot  implements Comparable<Bot>{
 	public final static float radius = 0.5f;
 	public final static float diameter = radius * 2;
 	public final static float maxV = 0.3f;
@@ -94,5 +94,14 @@ class Bot {
 		if (res < -max)
 			res = -max;
 		return res;
+	}
+
+	@Override
+	public int compareTo(Bot o) {
+		if (this.score < o.score)
+			return 1;
+		if (this.score > o.score)
+			return -1;
+		return 0;
 	}
 }

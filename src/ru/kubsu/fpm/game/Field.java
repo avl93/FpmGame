@@ -6,7 +6,10 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 class Field {
 	public final static float sizeX = 10f;
@@ -26,25 +29,58 @@ class Field {
 		return bots[i].y;
 	}
 
-	public Field(int b, int f) {
-		bots = new Bot[b];
-		for (int i = 0; i < b; i++) {
+	public Field(int botsCount, int flagsCount) {
+		bots = new Bot[botsCount];
+		for (int i = 0; i < botsCount; i++) {
 			bots[i] = new Bot(this, (float) Math.random() * sizeX,
 					(float) Math.random() * sizeY, i, i);
 		}
 
-		flags = new Flag[f];
+		flags = new Flag[flagsCount];
 		for (int i = 0; i < flags.length; i++) {
 			flags[i] = new Flag();
 		}
 
 		obstacles = new ArrayList<Obstacle>();
-		obstacles.add(new ObstCircle(5, 5, 1));
-		obstacles.add(new ObstRect(2, 2, 4, 4));
+
+		{
+			try {
+				File file = new File("map.txt");
+				// FileInputStream is = new FileInputStream(file);
+				Scanner scan = new Scanner(file);
+				String str = new String();
+				try {
+					while (file.canRead()) {
+						str += scan.nextLine();
+					}
+				} catch (Exception e) {
+
+				}
+				scan.close();
+				Xml xml = new Xml(str);
+				for (int i = 0; i < xml.tags.size(); i++) {
+					String name = xml.getName(i);
+					if (name.equals("circle")){
+						float cx = xml.getFloatAttr(i, "cx");
+						float cy = xml.getFloatAttr(i, "cy");
+						float radius = xml.getFloatAttr(i, "radius");
+						obstacles.add(new ObstCircle(cx,cy,radius));
+					} else if (name.equals("rect")){
+						float x1 = xml.getFloatAttr(i, "x1");
+						float y1 = xml.getFloatAttr(i, "y1");
+						float x2 = xml.getFloatAttr(i, "x2");
+						float y2 = xml.getFloatAttr(i, "y2");
+						obstacles.add(new ObstRect(x1, y1, x2, y2));
+					}
+				}
+			} catch (FileNotFoundException e) {
+				System.err.println("file not found!");
+				e.printStackTrace();
+			}
+
+		}
+
 		fieldInfo = new FieldInfo(this);
-		/*
-		 * bots[0].x=5; bots[0].y=5; bots[0].vx=0.3f; bots[0].vy=0.3f;
-		 */
 	}
 
 	public void upd(ArrayList<Integer> key, boolean updAI) {
@@ -76,6 +112,14 @@ class Field {
 			bots[i].move();
 		}
 		checkCollisions();
+	}
+
+	public boolean isBlocked(float x, float y) {
+		boolean res = false;
+		for (Obstacle curr : obstacles) {
+			res = res || curr.isInside(x, y);
+		}
+		return res;
 	}
 
 	private void checkCollisions() {
