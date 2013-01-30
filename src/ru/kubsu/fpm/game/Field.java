@@ -3,9 +3,10 @@ package ru.kubsu.fpm.game;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
 import java.util.ArrayList;
-import java.awt.RenderingHints;
 
 class Field {
 	public final static float sizeX = 10f;
@@ -39,6 +40,7 @@ class Field {
 
 		obstacles = new ArrayList<Obstacle>();
 		obstacles.add(new ObstCircle(5, 5, 1));
+		obstacles.add(new ObstRect(2, 2, 4, 4));
 		fieldInfo = new FieldInfo(this);
 		/*
 		 * bots[0].x=5; bots[0].y=5; bots[0].vx=0.3f; bots[0].vy=0.3f;
@@ -81,7 +83,6 @@ class Field {
 		final float k2 = k / 2;
 
 		for (int i = 0; i < bots.length; i++) {
-
 			// collisions with the walls...
 			if (bots[i].x - Bot.radius < 0) {
 				bots[i].x = Bot.diameter - bots[i].x;
@@ -107,9 +108,8 @@ class Field {
 			for (int j = i + 1; j < bots.length; j++) {
 				float dx = (bots[i].x - bots[j].x);
 				float dy = (bots[i].y - bots[j].y);
-				float dist = (float) Math.sqrt(Math.pow(dx, 2)
-						+ Math.pow(dy, 2));
-
+				float dist = (float) Point.distance(bots[i].x, bots[i].y,
+						bots[j].x, bots[j].y);
 				if (dist < Bot.diameter) {
 					dx /= dist;
 					dy /= dist;
@@ -124,18 +124,16 @@ class Field {
 
 			// ... flags ...
 			for (int j = 0; j < flags.length; j++) {
-				float dx = (bots[i].x - flags[j].x);
-				float dy = (bots[i].y - flags[j].y);
-				float dist = (float) Math.sqrt(Math.pow(dx, 2)
-						+ Math.pow(dy, 2));
+				float dist = (float) Point.distance(bots[i].x, bots[i].y,
+						flags[j].x, flags[j].y);
 				if (dist < Bot.radius + Flag.radius) {
 					flags[j] = new Flag();
 					bots[i].score++;
 				}
 			}
-			
-			//... and obstacles
-			for (Obstacle curr : obstacles){
+
+			// ... and obstacles
+			for (Obstacle curr : obstacles) {
 				curr.checkCollision(bots[i]);
 			}
 		}
@@ -188,7 +186,7 @@ class Field {
 		}
 
 		g2.setColor(Color.black);
-		
+
 		float s = Flag.radius;
 		for (int i = 0; i < flags.length; i++) {
 			g2.drawLine(getX(flags[i].x - s), getX(flags[i].y - s),
@@ -196,8 +194,8 @@ class Field {
 			g2.drawLine(getX(flags[i].x - s), getX(flags[i].y + s),
 					getX(flags[i].x + s), getX(flags[i].y - s));
 		}
-		
-		for (Obstacle curr:obstacles){
+
+		for (Obstacle curr : obstacles) {
 			curr.draw(g2);
 		}
 

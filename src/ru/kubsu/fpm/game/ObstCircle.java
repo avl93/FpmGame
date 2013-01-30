@@ -1,6 +1,7 @@
 package ru.kubsu.fpm.game;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.geom.Line2D;
 
 public class ObstCircle extends Obstacle {
@@ -15,14 +16,12 @@ public class ObstCircle extends Obstacle {
 
 	@Override
 	public float dist(float x, float y) {
-		return (float) Math.abs(Math.sqrt(Math.pow(this.cx - x, 2)
-				+ Math.pow(this.cx - x, 2))
-				- this.radius);
+		return (float) (Point.distance(cx, cy, x, y) - this.radius);
 	}
 
 	@Override
 	public boolean isInside(float x, float y) {
-		return Math.sqrt(Math.pow(this.cx - x, 2) + Math.pow(this.cx - x, 2)) < this.radius;
+		return Point.distance(cx, cy, x, y) < radius;
 	}
 
 	@Override
@@ -36,7 +35,7 @@ public class ObstCircle extends Obstacle {
 		float k2 = 0.5f;
 		float dx = (cx - bot.x);
 		float dy = (cy - bot.y);
-		float dist = (float) Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+		float dist = (float) Point.distance(cx, cy, bot.x, bot.y);
 
 		if (dist < Bot.radius + this.radius) {
 			dx /= dist;
