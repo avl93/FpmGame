@@ -1,6 +1,6 @@
 package ru.kubsu.fpm.game;
 
-class AiThread extends Thread{
+class AIThread extends Thread{
 	BotAI ai;
 	FieldInfo f;
 	int i;
@@ -8,7 +8,7 @@ class AiThread extends Thread{
 	long lastUpd;
 	int exceptionsCount;	
 	
-	public AiThread(BotAI ai, int i) {
+	public AIThread(BotAI ai, int i) {
 		this.ai=ai;
 		this.i=i;
 		this.f=null;

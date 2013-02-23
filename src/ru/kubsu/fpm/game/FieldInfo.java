@@ -13,7 +13,7 @@ public class FieldInfo {
 		return sizeY;
 	}
 
-	public FieldInfo(Field field) {
+	FieldInfo(Field field) {
 		if (field != null) {
 			bots = new BotInfo[field.bots.length];
 			for (int i = 0; i < field.bots.length; i++) {
@@ -30,7 +30,7 @@ public class FieldInfo {
 		}
 	}
 
-	public void upd(Field field) {
+	void upd(Field field) {
 		if (field != null) {
 			for (int i = 0; i < field.bots.length; i++) {
 				bots[i].setX(field.getBotX(i));
@@ -56,7 +56,7 @@ public class FieldInfo {
 		return bots[i].getY();
 	}
 	
-	public int getFlagssN(){
+	public int getFlagsN(){
 		return flags.length;
 	}
 	

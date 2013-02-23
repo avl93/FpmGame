@@ -12,7 +12,7 @@ class GameThread extends Thread {
 	public GameThread(GameFrame frame) {
 		frame.thread = this;
 		this.frame = frame;
-		this.field = new Field(10, 10);
+		this.field = new Field(5, 5);
 		frame.setSize(Field.getX(Field.sizeX + 3) + 20,
 				Field.getY(Field.sizeY) + 20);
 		key.clear();

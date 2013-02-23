@@ -12,10 +12,12 @@ public class BotAI2 extends BotAI {
 	public void upd(FieldInfo f, int i) {
 		float dx = f.getFlagX(i) - f.getBotX(i);
 		float dy = f.getFlagY(i) - f.getBotY(i);
+		
 		if (Math.abs(dx) > 0.5)
 			ax = dx;
 		else
 			ax=0;
+		
 		if (Math.abs(dy) > 0.5)
 			ay = dy;
 		else

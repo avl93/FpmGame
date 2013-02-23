@@ -15,7 +15,7 @@ class Bot  implements Comparable<Bot>{
 	BotAI ai;
 	private int i;
 	private boolean banned = false;
-	AiThread aiThread;
+	AIThread aiThread;
 
 	public Bot(Field field, float x, float y, int i, int str) {
 		this.field = field;
@@ -37,7 +37,7 @@ class Bot  implements Comparable<Bot>{
 		}
 
 		ai.init(i);
-		aiThread = new AiThread(ai, i);
+		aiThread = new AIThread(ai, i);
 		aiThread.setPriority(Thread.MIN_PRIORITY);
 		aiThread.start();
 	}

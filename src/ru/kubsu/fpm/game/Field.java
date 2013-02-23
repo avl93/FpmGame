@@ -36,51 +36,58 @@ class Field {
 					(float) Math.random() * sizeY, i, i);
 		}
 
-		flags = new Flag[flagsCount];
-		for (int i = 0; i < flags.length; i++) {
-			flags[i] = new Flag();
-		}
-
 		obstacles = new ArrayList<Obstacle>();
 
-		{
+		try {
+			File file = new File("map.txt");
+			Scanner scan = new Scanner(file);
+			String str = new String();
 			try {
-				File file = new File("map.txt");
-				// FileInputStream is = new FileInputStream(file);
-				Scanner scan = new Scanner(file);
-				String str = new String();
-				try {
-					while (file.canRead()) {
-						str += scan.nextLine();
-					}
-				} catch (Exception e) {
+				while (file.canRead()) {
+					str += scan.nextLine();
+				}
+			} catch (Exception e) {
 
-				}
-				scan.close();
-				Xml xml = new Xml(str);
-				for (int i = 0; i < xml.tags.size(); i++) {
-					String name = xml.getName(i);
-					if (name.equals("circle")){
-						float cx = xml.getFloatAttr(i, "cx");
-						float cy = xml.getFloatAttr(i, "cy");
-						float radius = xml.getFloatAttr(i, "radius");
-						obstacles.add(new ObstCircle(cx,cy,radius));
-					} else if (name.equals("rect")){
-						float x1 = xml.getFloatAttr(i, "x1");
-						float y1 = xml.getFloatAttr(i, "y1");
-						float x2 = xml.getFloatAttr(i, "x2");
-						float y2 = xml.getFloatAttr(i, "y2");
-						obstacles.add(new ObstRect(x1, y1, x2, y2));
-					}
-				}
-			} catch (FileNotFoundException e) {
-				System.err.println("file not found!");
-				e.printStackTrace();
 			}
+			scan.close();
+			Xml xml = new Xml(str);
+			for (int i = 0; i < xml.tags.size(); i++) {
+				String name = xml.getName(i);
+				switch (name) {
+				case "circle":
+					float cx = xml.getFloatAttr(i, "cx");
+					float cy = xml.getFloatAttr(i, "cy");
+					float radius = xml.getFloatAttr(i, "radius");
+					obstacles.add(new ObstCircle(cx, cy, radius));
+					break;
+				case "rect":
+					float x1 = xml.getFloatAttr(i, "x1");
+					float y1 = xml.getFloatAttr(i, "y1");
+					float x2 = xml.getFloatAttr(i, "x2");
+					float y2 = xml.getFloatAttr(i, "y2");
+					obstacles.add(new ObstRect(x1, y1, x2, y2));
+					break;
+				default:
+					System.err.println("Error: unknown obstacle type: " + name);
+				}
+			}
+		} catch (FileNotFoundException e) {
+			System.err.println("file not found!");
+			e.printStackTrace();
+		}
 
+		flags = new Flag[flagsCount];
+		for (int i = 0; i < flags.length; i++) {
+			newFlag(i);
 		}
 
 		fieldInfo = new FieldInfo(this);
+	}
+	
+	public void newFlag(int i){
+		do {
+			flags[i] = new Flag();
+		} while (isBlocked(flags[i].x, flags[i].y));
 	}
 
 	public void upd(ArrayList<Integer> key, boolean updAI) {
@@ -171,7 +178,7 @@ class Field {
 				float dist = (float) Point.distance(bots[i].x, bots[i].y,
 						flags[j].x, flags[j].y);
 				if (dist < Bot.radius + Flag.radius) {
-					flags[j] = new Flag();
+					newFlag(j);
 					bots[i].score++;
 				}
 			}
